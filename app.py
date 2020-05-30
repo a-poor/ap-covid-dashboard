@@ -106,6 +106,8 @@ boro_fig = make_boro_graph(False)
 app = dash.Dash(
     __name__
 )
+server = app.server
+
 app.title = "COVID-19 Dashboard"
 app.layout = html.Div(
     id="app-container",

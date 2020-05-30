@@ -1,3 +1,5 @@
 .ipynb_checkpoints/
 eda/
 venv/
+__pycache__/
+app/__pycache__/
