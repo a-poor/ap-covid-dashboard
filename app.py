@@ -121,14 +121,14 @@ app.layout = html.Div(
             children=html.I(children="by Austin Poor")
         ),
         html.P(
-            children="Information on the COVID-19 outbreak in NYC."
+            children=[
+                "Information on the COVID-19 outbreak in NYC. ",
+                "Data courtesy of the NYC Department of Health and Mental Hygiene. ",
+                "GitHub repo can be found ",
+                html.A(children="here",href="https://github.com/nychealth/coronavirus-data"),
+                "."
+            ]
         ),
-        html.P(children="Data courtesy of the NYC Department of Health and Mental Hygiene."),
-        html.P(children=[
-            "Repo can be found ",
-            html.A(children="here",href="https://github.com/nychealth/coronavirus-data"),
-            "."
-        ]),
         
         # Key numbers table
         html.H2(children="At a Glance"),
