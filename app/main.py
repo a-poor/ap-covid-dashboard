@@ -2,8 +2,6 @@
 import numpy as np
 import pandas as pd
 
-import requests
-
 import plotly.express as px
 import plotly.graph_objs as go
 
