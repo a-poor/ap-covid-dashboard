@@ -1,4 +1,6 @@
 
+import datetime
+
 import numpy as np
 import pandas as pd
 
@@ -53,6 +55,12 @@ by_poverty = pd.read_csv(
 by_age = pd.read_csv(
     "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/by-age.csv"
 ).iloc[:5]
+
+# Syndromic
+syndromic_data = pd.read_csv(
+    "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/syndromic_data.csv"
+)
+syndromic_data.Date = pd.to_datetime(syndromic_data.Date)
 
 
 ###############################
@@ -157,6 +165,209 @@ race_rate_fig.update_layout(
     xaxis_title=None
 )
 
+poverty_rate_fig = go.Figure(data=[
+    go.Bar(
+        name='Deaths',
+        x=by_poverty.DEATH_RATE_ADJ,
+        y=by_poverty.POVERTY_GROUP,
+        orientation='h',
+        marker_color="#d62728"),
+    go.Bar(
+        name='Hospitalizations',
+        x=by_poverty.HOSPITALIZED_RATE_ADJ,
+        y=by_poverty.POVERTY_GROUP,
+        orientation='h',
+        marker_color="#ff7f0e"),
+    go.Bar(
+        name='Cases',
+        x=by_poverty.CASE_RATE_ADJ,
+        y=by_poverty.POVERTY_GROUP,
+        orientation='h',
+        marker_color="#1f77b4")
+    
+])
+poverty_rate_fig.update_layout(
+    title="Age-Adjusted COVID-19 Rate by Poverty Level (per 100,000 People)",
+    xaxis_title=None
+)
+
+# Age rate
+age_rate_fig = go.Figure(data=[
+    go.Bar(
+        name='Deaths',
+        x=by_age.DEATH_RATE,
+        y=by_age.AGE_GROUP,
+        orientation='h',
+        marker_color="#d62728"),
+    go.Bar(
+        name='Hospitalizations',
+        x=by_age.HOSPITALIZED_RATE,
+        y=by_age.AGE_GROUP,
+        orientation='h',
+        marker_color="#ff7f0e"),
+    go.Bar(
+        name='Cases',
+        x=by_age.CASE_RATE,
+        y=by_age.AGE_GROUP,
+        orientation='h',
+        marker_color="#1f77b4")
+    
+])
+age_rate_fig.update_layout(
+    title="COVID-19 Rate by Age Group (per 100,000 People)",
+    xaxis_title=None
+)
+
+
+vis_admit_fig = go.Figure(data=[
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit All ages'],
+        name="Admissions"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit All ages'],
+        name="Visits"
+    )
+])
+vis_admit_fig.update_layout(
+    title="COVID-19 Rate of Hospital Visits vs Admissions (per 100,000 People)",
+    showlegend=True,
+    xaxis_title=None,
+    yaxis_title=None
+)
+vis_admit_fig_ymax = max(
+    syndromic_data["Admit All ages"].max(),
+    syndromic_data["Visit All ages"].max()
+)
+vis_admit_fig.add_shape(
+    # Line reference to the axes
+        type="line",
+        xref="x",
+        yref="y",
+        x0=datetime.datetime(2020,3,7),
+        y0=vis_admit_fig_ymax,
+        x1=datetime.datetime(2020,3,7),
+        y1=0,
+        line=dict(
+            color="gray",
+            width=3,
+        ),
+        opacity=0.5
+    )
+vis_admit_fig.add_shape(
+    # Line reference to the axes
+        type="line",
+        xref="x",
+        yref="y",
+        x0=datetime.datetime(2020,3,22),
+        y0=vis_admit_fig_ymax,
+        x1=datetime.datetime(2020,3,22),
+        y1=0,
+        line=dict(
+            color="gray",
+            width=3,
+        ),
+        opacity=0.5
+    )
+vis_admit_fig.update_layout(
+    annotations=[
+        dict(
+            x=datetime.datetime(2020,3,7),
+            y=vis_admit_fig_ymax,
+            xref="x",
+            yref="y",
+            text="Cuomo Declares State of Emergency",
+            align="right",
+            showarrow=True,
+            ax=-85,
+            ay=-20
+        ),
+        dict(
+            x=datetime.datetime(2020,3,22),
+            y=vis_admit_fig_ymax,
+            xref="x",
+            yref="y",
+            text="State-Wide Stay-at-Home Order",
+            align="left",
+            showarrow=True,
+            ax=90,
+            ay=-15
+        ),
+    ]
+)
+
+hosp_visit_age_fig = go.Figure(data=[
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit 0-17'],
+        name="0-17"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit 18-44'],
+        name="18-44"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit 45-64'],
+        name="45-64"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit 65-74'],
+        name="65-74"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Visit 75+'],
+        name="75+"
+    )
+])
+hosp_visit_age_fig.update_layout(
+    title="COVID-19 Rate of Hospital Visits by Age Group (per 100,000 People)",
+    showlegend=True,
+    xaxis_title=None,
+    yaxis_title=None
+)
+
+hosp_admit_age_fig = go.Figure(data=[
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit 0-17'],
+        name="0-17"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit 18-44'],
+        name="18-44"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit 45-64'],
+        name="45-64"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit 65-74'],
+        name="65-74"
+    ),
+    go.Scatter(
+        x=syndromic_data.Date,
+        y=syndromic_data['Admit 75+'],
+        name="75+"
+    )
+])
+hosp_admit_age_fig.update_layout(
+    title="COVID-19 Rate of Hospital Admissions by Age Group (per 100,000 People)",
+    showlegend=True,
+    xaxis_title=None,
+    yaxis_title=None
+)
+
+
+
 ###############################
 ###      Make the App       ###
 ###############################
@@ -179,14 +390,6 @@ app.layout = html.Div(
         ),
         html.P(
             children="Information on the COVID-19 outbreak in NYC."
-        ),
-        html.P(
-            children=[
-                "Data courtesy of the NYC Department of Health and Mental Hygiene. ",
-                "GitHub repo can be found ",
-                html.A(children="here",href="https://github.com/nychealth/coronavirus-data"),
-                "."
-            ]
         ),
         
         # Key numbers table
@@ -262,6 +465,60 @@ app.layout = html.Div(
             id="race-rate-graph",
             figure=race_rate_fig
         ),
+
+        # By poverty level
+        html.H2(children="Cases by Poverty Level"),
+        html.P(
+            children=""
+        ),
+        dcc.Graph(
+            id="poverty-rate-graph",
+            figure=poverty_rate_fig
+        ),
+
+        # By age group
+        html.H2(children="Cases by Age Group"),
+        html.P(
+            children=""
+        ),
+        dcc.Graph(
+            id="age-rate-graph",
+            figure=age_rate_fig
+        ),
+
+        # Hospital Visit & Admissions
+        html.H2(children="Hospital Visits and Admissions"),
+        html.P(
+            children=""
+        ),
+        dcc.Graph(
+            id="hosp-vis-admit-graph",
+            figure=vis_admit_fig
+        ),
+        dcc.Graph(
+            id="hosp-vis-age-graph",
+            figure=hosp_visit_age_fig
+        ),
+        dcc.Graph(
+            id="hosp-admit-age-graph",
+            figure=hosp_admit_age_fig
+        ),
+
+        # Source information
+        html.H2(children="Source"),
+        html.P(
+            children=[
+                "Data courtesy of the NYC Department of Health and Mental Hygiene. "
+            ]
+        ),
+        html.P(
+            children=[
+                "GitHub repo can be found ",
+                html.A(children="here",href="https://github.com/nychealth/coronavirus-data"),
+                "."
+            ]
+        ),
+        html.Br()
     ]
 )
 
