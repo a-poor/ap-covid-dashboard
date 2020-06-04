@@ -232,7 +232,7 @@ vis_admit_fig = go.Figure(data=[
     )
 ])
 vis_admit_fig.update_layout(
-    title="COVID-19 Rate of Hospital Visits vs Admissions (per 100,000 People)",
+    title="Rate of Hospital Visits vs Admissions (per 100,000 People)",
     showlegend=True,
     xaxis_title=None,
     yaxis_title=None
@@ -242,7 +242,20 @@ vis_admit_fig_ymax = max(
     syndromic_data["Visit All ages"].max()
 )
 vis_admit_fig.add_shape(
-    # Line reference to the axes
+        type="line",
+        xref="x",
+        yref="y",
+        x0=datetime.datetime(2020,3,1),
+        y0=vis_admit_fig_ymax,
+        x1=datetime.datetime(2020,3,1),
+        y1=0,
+        line=dict(
+            color="gray",
+            width=3,
+        ),
+        opacity=0.5
+    )
+vis_admit_fig.add_shape(
         type="line",
         xref="x",
         yref="y",
@@ -257,7 +270,6 @@ vis_admit_fig.add_shape(
         opacity=0.5
     )
 vis_admit_fig.add_shape(
-    # Line reference to the axes
         type="line",
         xref="x",
         yref="y",
@@ -274,6 +286,17 @@ vis_admit_fig.add_shape(
 vis_admit_fig.update_layout(
     annotations=[
         dict(
+            x=datetime.datetime(2020,3,1),
+            y=vis_admit_fig_ymax,
+            xref="x",
+            yref="y",
+            text="First Reported COVID-19 Case",
+            align="right",
+            showarrow=True,
+            ax=-100,
+            ay=10
+        ),
+        dict(
             x=datetime.datetime(2020,3,7),
             y=vis_admit_fig_ymax,
             xref="x",
@@ -281,8 +304,8 @@ vis_admit_fig.update_layout(
             text="Cuomo Declares State of Emergency",
             align="right",
             showarrow=True,
-            ax=-85,
-            ay=-20
+            ax=-35,
+            ay=-50
         ),
         dict(
             x=datetime.datetime(2020,3,22),
@@ -292,8 +315,8 @@ vis_admit_fig.update_layout(
             text="State-Wide Stay-at-Home Order",
             align="left",
             showarrow=True,
-            ax=90,
-            ay=-15
+            ax=30,
+            ay=-25
         ),
     ]
 )
@@ -326,7 +349,7 @@ hosp_visit_age_fig = go.Figure(data=[
     )
 ])
 hosp_visit_age_fig.update_layout(
-    title="COVID-19 Rate of Hospital Visits by Age Group (per 100,000 People)",
+    title="Rate of Hospital Visits by Age Group (per 100,000 People)",
     showlegend=True,
     xaxis_title=None,
     yaxis_title=None
@@ -360,7 +383,7 @@ hosp_admit_age_fig = go.Figure(data=[
     )
 ])
 hosp_admit_age_fig.update_layout(
-    title="COVID-19 Rate of Hospital Admissions by Age Group (per 100,000 People)",
+    title="Rate of Hospital Admissions by Age Group (per 100,000 People)",
     showlegend=True,
     xaxis_title=None,
     yaxis_title=None
